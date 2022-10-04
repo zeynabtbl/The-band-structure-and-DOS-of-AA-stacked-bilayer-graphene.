@@ -26,7 +26,7 @@ for n=1:length(kx)
               t4*v, t1, t0*v, 0];
 
       E{n,m}=eig(H{n,m});
-      Emat=E\{n,m\};
+      Emat=E{n,m};
         
         
       for k=1:4;
@@ -86,4 +86,4 @@ end
 
 xlabel('k_ya');
 ylabel('k_xa');
-zlabel(\cf2 'E'\cf0 );
+zlabel('E');
