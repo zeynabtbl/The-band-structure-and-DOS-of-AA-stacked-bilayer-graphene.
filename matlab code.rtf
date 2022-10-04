@@ -1,0 +1,326 @@
+{\rtf1\mac\ansicpg10000\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red170\green4\blue249;\red2\green128\blue9;\red14\green0\blue255;
+}
+{\*\expandedcolortbl;;\csgenericrgb\c66667\c1569\c97647;\csgenericrgb\c784\c50196\c3529;\csgenericrgb\c5490\c0\c100000;
+}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs20 \cf0 clear,clc;
+\fs24 \
+
+\fs20 format \cf2 long
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf2  
+\fs24 \cf0 \
+
+\fs20 \cf2  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3 %% construct K-space grid
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 kx=linspace(-2*pi/(3),2*pi/(3),40);
+\fs24 \
+
+\fs20 ky=linspace(-2*pi/sqrt(3),2*pi/sqrt(3),40);
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20  
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3 %% Define hopping parameters
+\fs24 \cf0 \
+
+\fs20 \cf3  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 t0=2.58;
+\fs24 \
+
+\fs20 t1=0.2159;
+\fs24 \
+
+\fs20 t4=-0.0206;
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20  
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3 %% Realistic Parameters
+\fs24 \cf0 \
+
+\fs20 \cf3  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0     \cf4 for\cf0  n=1:length(kx)
+\fs24 \
+
+\fs20     \cf4 for\cf0  m=1:length(ky)
+\fs24 \
+
+\fs20         
+\fs24 \
+
+\fs20         f(n,m)=exp(-i*kx(n))+2*cos(sqrt(3)*0.5*ky(m))*exp(0.5*i*kx(n));
+\fs24 \
+
+\fs20         
+\fs24 \
+
+\fs20         u=f(n,m);
+\fs24 \
+
+\fs20         v=conj(f(n,m));    
+\fs24 \
+
+\fs20        
+\fs24 \
+
+\fs20        H\{n,m\}=[0, t0*u, t1, t4*u;
+\fs24 \
+
+\fs20            t0*v, 0, t4*v, t1;
+\fs24 \
+
+\fs20            t1, t4*u, 0, t0*u;
+\fs24 \
+
+\fs20           t4*v, t1, t0*v, 0];
+\fs24 \
+
+\fs20        
+\fs24 \
+
+\fs20         E\{n,m\}=eig(H\{n,m\});
+\fs24 \
+
+\fs20         Emat=E\{n,m\};
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20         
+\fs24 \
+
+\fs20         \cf4 for\cf0  k=1:4
+\fs24 \
+
+\fs20             bands\{k\}(n,m)=Emat(k); 
+\fs24 \
+
+\fs20                    
+\fs24 \
+
+\fs20            \cf4 end\cf0     
+\fs24 \
+
+\fs20         \cf4 end
+\fs24 \cf0 \
+
+\fs20     \cf4 end\cf0  
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20  
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3 %% Density of states by retarded Green function
+\fs24 \cf0 \
+
+\fs20 \cf3  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 E=cell2mat(bands); 
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20  eta=i*0.2;    \cf3 %Small imaginary number needed to define retarded G^r and advanced G^a Green functions; 
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0  j=1;
+\fs24 \
+
+\fs20  
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf4 for\cf0  En=-10:0.05:10      \cf3 %energy loop
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0   g=0  
+\fs24 \
+
+\fs20  D=0 
+\fs24 \
+
+\fs20  \cf4 for\cf0  n=1:length(kx)
+\fs24 \
+
+\fs20     \cf4 for\cf0  m=1:length(ky)
+\fs24 \
+
+\fs20        
+\fs24 \
+
+\fs20         \cf4 if\cf0  En<0 
+\fs24 \
+
+\fs20     g=(1/(En-E(n,m)+eta))+g;
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20         \cf4 else\cf0  En>0
+\fs24 \
+
+\fs20          g=(1/(En+E(n,m)+eta))+g;   
+\fs24 \
+
+\fs20         
+\fs24 \
+
+\fs20         \cf4 end
+\fs24 \cf0 \
+
+\fs20     \cf4 end
+\fs24 \cf0 \
+
+\fs20     \cf4 end
+\fs24 \cf0 \
+
+\fs20     dos(j)=(-1/pi)*imag(g);
+\fs24 \
+
+\fs20     j=j+1
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf4 end
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3  
+\fs24 \cf0 \
+
+\fs20 \cf3  
+\fs24 \cf0 \
+
+\fs20 \cf3 %% Plot DOS versus Energy using the same grid of energy values as in the for loop above
+\fs24 \cf0 \
+
+\fs20 \cf3 figure(1);
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 En=-10:0.05:10;            \cf3 %Energy values at which dos will be plotted
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3  
+\fs24 \cf0 \
+
+\fs20 \cf3 %subplot(2,1,1);
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 plot(En,dos,\cf2 'b -'\cf0 );
+\fs24 \
+
+\fs20 xlabel(\cf2 'Energy'\cf0 ); 
+\fs24 \
+
+\fs20 ylabel(\cf2 'Total DOS'\cf0 );
+\fs24 \
+
+\fs20  
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf3 %% plot energy versus wave vector
+\fs24 \cf0 \
+
+\fs20 \cf3  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 figure(2) 
+\fs24 \
+
+\fs20  
+\fs24 \
+
+\fs20  
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf4 for\cf0  k=1:4
+\fs24 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0     band=bands\{k\};
+\fs24 \
+
+\fs20     surf(ky,kx,band)
+\fs24 \
+
+\fs20     colormap \cf2 winter
+\fs24 \cf0 \
+
+\fs20 hold \cf2 on
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf4 end
+\fs24 \cf0 \
+
+\fs20 \cf4  
+\fs24 \cf0 \
+
+\fs20 \cf4  
+\fs24 \cf0 \
+\pard\pardeftab720\partightenfactor0
+
+\fs20 \cf0 xlabel(\cf2 'k_ya'\cf0 );
+\fs24 \
+
+\fs20 ylabel(\cf2 'k_xa'\cf0 );
+\fs24 \
+
+\fs20 zlabel(\cf2 'E'\cf0 );
+\fs24 \
+
+\fs20  
+\fs24 \
+\
+}
